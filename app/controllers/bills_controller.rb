@@ -1,103 +1,110 @@
 class BillsController < ApplicationController
-  # GET /bills
-  # GET /bills.json
-  def index
+  before_filter :authenticate_user!
+
+  def new
     @house = House.find(params[:house_id])
-    @bills = @house.bills.paginate(:page => params[:page], :per_page => 10).order('paid DESC')
+    @bill = @house.bills.new
+
+    @house.house_mates.each do |housemate|
+    	@bill.bill_parts.new(:house_mate => housemate)
+    end
+
+    render :layout => !request.xhr?
+  end
+
+  def create
+    @house = House.find(params[:house_id])
+
+    params[:bill][:due] = Time.strptime(params[:bill][:due], "%Y-%m-%d")
+    @bill = @house.bills.new(params[:bill])
+
+    params[:bill_parts].each_value { |bill_part| @bill.bill_parts.build(bill_part) }
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @bills }
+      if @bill.save and @bill.bill_parts.each { |bill_part| bill_part.save }
+        format.html { redirect_to house_bills_path(@house), :notice => 'Bill was successfully added.' }
+        format.json { render :json => @bill, :status => :added, :location => @house }
+      else
+        format.html { render :action => "new" }
+	format.json { render :json => @bill.errors, :status => :unprocessable_entity }
+      end
     end
   end
 
-  # GET /bills/1
-  # GET /bills/1.json
-  def show
+  def update
+    @bill = Bill.find(params[:id])
+    @house = @bill.house
+
+    params[:bill][:due] = Time.strptime(params[:bill][:due], "%Y-%m-%d")
+
+    respond_to do |format|
+      if @bill.update_attributes(params[:bill]) and @bill.bill_parts.each { |bill_part| bill_part.update_attributes (params[:bill_part][bill_part.id.to_s]) }
+        format.html { redirect_to house_bills_path(@house), :notice => 'Bill was successfully updated.' }
+	format.json { head :no_content }
+      else
+       format.html { render :action => "edit" }
+       format.json { render :json => @bill.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  def pay
+    @bill = Bill.find(params[:id])
+    @house = @bill.house
+
+    respond_to do |format|
+      if @bill.update_attributes(:paid => true)
+        format.html { redirect_to house_path(@house), :notice => 'Bill was successfully updated.' }
+	format.json { head :no_content }
+	format.js { render :nothing => true }
+      else
+        format.html { redirect_to house_path(@house), :alert => 'Error updating bill.' }
+        format.json { render :json => @bill.errors, :status => :unprocessable_entity }
+	format.js { render :nothing => true }
+      end
+    end
+  end
+
+  def index
     @house = House.find(params[:house_id])
+    @bills = @house.bills.asc(:due).desc(:amount)
+
+    respond_to do |format|
+      format.html
+      format.json
+    end
+  end
+
+  def show
     @bill = Bill.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @bill }
+      format.html
+      format.json
     end
   end
 
-  # GET /bills/new
-  # GET /bills/new.json
-  def new
-    @house = House.find(params[:house_id])
-    @bill = Bill.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @bill }
-    end
-  end
-
-  # GET /bills/1/edit
   def edit
-    @house = House.find(params[:house_id])
-    @bill = @house.bills.find(params[:id])
-  end
-
-  # POST /bills
-  # POST /bills.json
-  def create
-    @house = House.find(params[:house_id])
-    @bill = Bill.new(params[:bill])
-    @bill.paid = nil
+    @bill = Bill.find(params[:id])
+    @house = @bill.house
 
     respond_to do |format|
-      if @bill.save
-        format.html { redirect_to @bill, notice: 'Bill was successfully created.' }
-        format.json { render json: @bill, status: :created, location: @bill }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @bill.errors, status: :unprocessable_entity }
-      end
+      format.html # edit.html.erb
+      format.json { render json: @bill }
     end
   end
 
-  # PUT /bills/1
-  # PUT /bills/1.json
-  def update
-    @house = House.find(params[:house_id])
-    @bill = @house.bills.find(params[:id])
+  def destroy
+    @bill = Bill.find(params[:id])
 
     respond_to do |format|
-      if @bill.update_attributes(params[:bill])
-        format.html { redirect_to @bill, notice: 'Bill was successfully updated.' }
+      if @bill.destroy
+        format.html { redirect_to(:back, :notice => 'Bill was successfully removed.')  }
         format.json { head :no_content }
       else
-        format.html { render action: "edit" }
-        format.json { render json: @bill.errors, status: :unprocessable_entity }
+        format.html { redirect_to(:back, :alert => 'Bill could not be removed due to an unknown error.') }
+        format.json { render :json => :back.errors, :status => :unprocessable_entity }
       end
-    end
-  end
-
-  def upload
-    respond_to do |format|
-      format.html
-    end
-  end
-
-  def process_upload
-    @house = House.find(params[:house_id])
-    post = Bill.import(@house,params[:upload])
-    redirect_to house_bills_path(@house)
-  end
-
-  # DELETE /bills/1
-  # DELETE /bills/1.json
-  def destroy
-    @house = House.find(params[:house_id])
-    @bill = @house.bills.find(params[:id])
-    @bill.destroy
-
-    respond_to do |format|
-      format.html { redirect_to house_bills_path(@house) }
-      format.json { head :no_content }
     end
   end
 end

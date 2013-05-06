@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-HousematesDilleyNetAu::Application.config.secret_token = '2799717afd450ab47c1d0bb6e90de5b2c26fbb3074370ee556fbfe5a86d04e875f5d057ccbdfb155ac18d5d0d3c57a0981749f7755ba86fdebe9a5b6494318c7'
+HouseMates::Application.config.secret_token = 'ca05623d07c2ded4546bf8e9bde2f62ba93fb7592d3f8753a63e4bf6a10e84e10a03ba8d82e3e08542726e7e6617b64d110bfc1d599c58aab1992106ca8df9e7'

@@ -1,0 +1,27 @@
+nav.main_nav {
+  /*height: 50px;*/
+  border-bottom: 1px solid black;
+  padding: 5px;
+  margin: -8px -8px 0px -8px;
+  vertical-align: centre;
+}
+
+nav.user_nav {
+  text-align: right;
+  float: right;
+  /*width: 150px;*/
+}
+
+nav.user_nav img {
+  float: right;
+  padding-left: 12px;
+}
+
+nav.user_dropdown {
+  display: none;
+  /*width: 150px; */
+}
+
+nav.user_nav:hover nav.user_dropdown {
+  display: block;
+}

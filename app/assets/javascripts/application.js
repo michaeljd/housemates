@@ -12,8 +12,13 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require twitter/bootstrap
-//= require bootstrap-datepicker
+//= require jquery-ui
+//= require gritter
+//= require jquery.facebox
 //= require_tree .
 
-$('.datepicker').datepicker({"format": "yyyy-mm-dd", "autoclose": true})
+$(document).ready(function() {
+  //$.facebox.settings.loadingImage = "/javascripts/facebox/loading.gif";
+  //$.facebox.settings.closeImage = "/javascripts/facebox/closelabel.gif";
+  return $("a[rel*=facebox]").facebox();
+});

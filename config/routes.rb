@@ -1,28 +1,33 @@
-HousematesDilleyNetAu::Application.routes.draw do
+HouseMates::Application.routes.draw do
+  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" , :sessions => 'users/sessions' }
 
+  resources :admin
+
+  resources :users do
+    resources :house_mates
+  end
 
   resources :houses do
-
-    get 'housemates_balances_data'
-
-    resources :housemates do
-      get 'balance_data'
-
-      resources :deposits
-    end
-
-    resources :deposits do
-      get 'upload', :on => :collection
-      post 'process_upload', :on => :collection
-    end
-
-    resources :bills do
-      get 'upload', :on => :collection
-      post 'process_upload', :on => :collection
-      resources :parts
-    end
-
+    resources :house_mates
+    #resources :billers
+    resources :bills
   end
+
+  resources :house_mates do
+    resources :deposits
+  end
+
+  resources :bills do
+    get 'pay', :on => :member
+    #resources :bill_parts
+  end
+
+
+  authenticated :user do
+    root :to => 'home#index'
+  end
+
+  root :to => 'home#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -73,7 +78,7 @@ HousematesDilleyNetAu::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'home#index'
+  # root :to => 'welcome#index'
 
   # See how all your routes lay out with "rake routes"
 

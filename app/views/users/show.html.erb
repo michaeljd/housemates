@@ -1,0 +1,10 @@
+<h1><%= @user.first_name %> <%= @user.last_name %></h1>
+<%= image_tag @user.get_image %>
+<p>Email: <%= link_to @user.email, "mailto:"+@user.email %></p>
+
+<h2>HouseMate at:<h3>
+<ul>
+<% @housemates.each do |housemate| %>
+	<li><%= link_to housemate.house.name, housemate.house %> (<%= housemate.house.address %>)</li>
+<% end %>
+</ul>

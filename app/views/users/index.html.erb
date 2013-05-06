@@ -1,0 +1,19 @@
+<h1>Your Housemates</h1>
+<% @housemates.each do |housemate| %>
+  <p>
+  <%= image_tag housemate.user.get_image %> 
+  <%= link_to housemate.user.first_name + " " + housemate.user.last_name, housemate.user %>
+  (<%= housemate.user.email %>)
+  </p> 
+<% end %>
+
+<% if current_user.has_role? :admin %>
+<h1>All Users</h1>
+<% @users.each do |user| %>
+  <p>
+  <%= image_tag user.get_image %> 
+  <%= link_to user.first_name + " " + user.last_name, user %>
+  (<%= user.email %>)
+  </p> 
+<% end %>
+<% end %>

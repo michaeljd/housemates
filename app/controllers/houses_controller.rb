@@ -1,12 +1,17 @@
 class HousesController < ApplicationController
+  before_filter :authenticate_user!
+  load_and_authorize_resource
+
   # GET /houses
   # GET /houses.json
   def index
+  if current_user.has_role? :admin
     @houses = House.all
+  end
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @houses }
+      format.json { render json: current_user.houses }
     end
   end
 
@@ -14,6 +19,8 @@ class HousesController < ApplicationController
   # GET /houses/1.json
   def show
     @house = House.find(params[:id])
+    @housemates = @house.house_mates
+    @bills = @house.bills.where(:paid => false)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -35,6 +42,7 @@ class HousesController < ApplicationController
   # GET /houses/1/edit
   def edit
     @house = House.find(params[:id])
+    @housemates = HouseMate.where(:house_id => @house.id)
   end
 
   # POST /houses
@@ -78,14 +86,6 @@ class HousesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to houses_url }
       format.json { head :no_content }
-    end
-  end
-
-  def housemates_balances_data
-    @house = House.find(params[:house_id])
-
-    respond_to do |format|
-      format.json 
     end
   end
 end

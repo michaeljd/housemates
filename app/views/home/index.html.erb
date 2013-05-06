@@ -1,2 +1,17 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+<h3>Home</h3>
+<% if user_signed_in? %>
+  <p>Hi <%= @user.first_name %>!</p>
+  <% if @housemates.size > 1 %><h2>Your Houses</h2><% end %>
+  <% @housemates.each do |h| %>
+  <p><%= link_to h.house.name, h.house %></p>
+  <p>Your Balance: <%= number_to_currency h.balance %></p>
+  <p>House Balance: <%= number_to_currency h.house.balance %></p>
+  <% end %>
+<footer>
+<%= link_to "All Users", :users %>
+<%= link_to "All Houses", :houses %>
+</footer>
+<% else %>
+<p>You are not logged in. <%= link_to "Log in", new_user_session_path, :remote => true, :rel => 'facebox' %>
+or <%= link_to "Sign up", new_user_registration_path %>!</p>
+<% end %>

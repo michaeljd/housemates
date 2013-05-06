@@ -1,15 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  name: MyString
   description: MyString
-  amount: 9.99
-  due: 2012-12-04
-  paid: 2012-12-04
+  paid: false
+  due: 2012-05-25
 
 two:
-  name: MyString
   description: MyString
-  amount: 9.99
-  due: 2012-12-04
-  paid: 2012-12-04
+  paid: false
+  due: 2012-05-25

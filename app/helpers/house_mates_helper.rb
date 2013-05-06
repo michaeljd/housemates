@@ -1,0 +1,2 @@
+module HouseMatesHelper
+end

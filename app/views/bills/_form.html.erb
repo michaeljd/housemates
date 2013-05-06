@@ -1,39 +1,47 @@
-<%= form_for [@house,@bill], :html => { :class => 'form-horizontal' } do |f| %>
-  <div class="control-group">
-    <%= f.label :name, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :name, :class => 'text_field' %>
+<%= form_for([@house,@bill]) do |f| %>
+  <% if @bill.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bill.errors.count, "error") %> prohibited this bill from being saved:</h2>
+
+      <ul>
+      <% @bill.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
     </div>
+  <% end %>
+
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
   </div>
-  <div class="control-group">
-    <%= f.label :description, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :description, :class => 'text_field' %>
-    </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
   </div>
-  <div class="control-group">
-    <%= f.label :amount, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :amount, :class => 'text_field' %>
-    </div>
+  <div class="field">
+    <%= f.label :due %><br />
+    <%= f.datepicker 'due', :dateFormat => "yy-mm-dd" %>
+    <%= f.label :paid, "Already paid?" %>
+    <%= f.check_box :paid %>
   </div>
-  <div class="control-group">
-    <%= f.label :due, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.date_select :due, :class => 'date_select' %>
-    </div>
+  <div class="field">
+    <%= f.label :amount %><br />
+    <%= f.text_field :amount %>
   </div>
 
-  <div class="control-group">
-    <%= f.label :paid, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.date_select :paid, :class => 'date_select' %>
-    </div>
-  </div>
+  <% @bill.bill_parts.each_with_index do |bill_part, index| %>
+    <%= fields_for "bill_parts[#{index}]", bill_part do |fp| %>
+      <%= image_tag bill_part.house_mate.user.get_image %>
+      <%= fp.hidden_field :house_mate_id, :value => bill_part.house_mate.id %>
+      <%= fp.label :amount, bill_part.house_mate.name+"'s Share" %>
+      <%= fp.text_field :amount %>
+    <% end %>
+      <br />
+  <% end %>
 
-  <div class="form-actions">
-    <%= f.submit nil, :class => 'btn btn-primary' %>
-    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                house_bills_path(@house), :class => 'btn' %>
+  <div class="actions">
+    <%= f.submit %>
   </div>
 <% end %>

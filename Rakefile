@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-HousematesDilleyNetAu::Application.load_tasks
+HouseMates::Application.load_tasks

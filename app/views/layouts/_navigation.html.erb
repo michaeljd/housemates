@@ -1,0 +1,23 @@
+<nav class="main_nav">
+  <%= link_to "Home", root_path %>
+  <% if user_signed_in? %>
+  | <%= link_to "My Houses", houses_path %>
+  <% end %>
+  <nav class="user_nav">
+  <% if user_signed_in? %>
+    <%= image_tag current_user.get_image %> <%= current_user.first_name %>
+    <nav class="user_dropdown">
+      <%= link_to 'Logout', destroy_user_session_path, :method=>'delete'  %>
+      <%= link_to 'Edit account', edit_user_registration_path %>
+      <% if current_user.has_role? :admin %>
+        <%= link_to 'Admin', users_path %>
+      <% end %>
+    </nav>
+  <% else %>
+    <%= link_to 'Login', new_user_session_path %>
+    <nav class="user_dropdown">
+      <%= render 'devise/shared/links' %>
+    </nav>
+  <% end %>
+  </nav>
+</nav>

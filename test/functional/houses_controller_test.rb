@@ -18,7 +18,7 @@ class HousesControllerTest < ActionController::TestCase
 
   test "should create house" do
     assert_difference('House.count') do
-      post :create, house: { address: @house.address, description: @house.description, name: @house.name }
+      post :create, house: { address: @house.address, name: @house.name }
     end
 
     assert_redirected_to house_path(assigns(:house))
@@ -35,7 +35,7 @@ class HousesControllerTest < ActionController::TestCase
   end
 
   test "should update house" do
-    put :update, id: @house, house: { address: @house.address, description: @house.description, name: @house.name }
+    put :update, id: @house, house: { address: @house.address, name: @house.name }
     assert_redirected_to house_path(assigns(:house))
   end
 

@@ -1,0 +1,11 @@
+<% @house.house_mates.build %>
+<%= form_for(:user, :url => house_house_mates_path(@house)) do |housemate_form| %>
+<div class="field">
+<%= housemate_form.label :email %><br />
+<%= housemate_form.email_field :email %>
+</div>
+
+<div class="actions">
+<%= housemate_form.submit "Add HouseMate" %>
+</div>
+<% end %>

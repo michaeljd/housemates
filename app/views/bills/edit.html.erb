@@ -1,6 +1,51 @@
-<%- model_class = Bill -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => t('helpers.titles.edit', :model => model_class.model_name.human,
-                                   :default => "Edit #{model_class.model_name.human}") %></h1>
-</div>
-<%= render :partial => 'form' %>
+<h1>Edit bill</h1>
+
+<%= form_for([@house,@bill]) do |f| %>
+  <% if @bill.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bill.errors.count, "error") %> prohibited this bill from being saved:</h2>
+
+      <ul>
+      <% @bill.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </div>
+  <div class="field">
+    <%= f.label :due %><br />
+    <%= f.datepicker 'due', :dateFormat => "yy-mm-dd" %>
+    <%= f.label :paid, "Already paid?" %>
+    <%= f.check_box :paid %>
+  </div>
+  <div class="field">
+    <%= f.label :amount %><br />
+    <%= f.text_field :amount %>
+  </div>
+
+  <% @bill.bill_parts.each do |bill_part| %>
+    <%= fields_for "bill_part[]", bill_part do |fp| %>
+      <%= image_tag bill_part.house_mate.user.get_image %>
+      <%= fp.hidden_field :house_mate_id, :value => bill_part.house_mate.id %>
+      <%= fp.label :amount, bill_part.house_mate.name+"'s Share" %>
+      <%= fp.text_field :amount %>
+    <% end %>
+      <br />
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', house_bills_path(@house) %>

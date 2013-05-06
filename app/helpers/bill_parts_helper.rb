@@ -1,0 +1,2 @@
+module BillPartsHelper
+end

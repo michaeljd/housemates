@@ -1,0 +1,7 @@
+<table>
+<tr><th>Date</th><th>Amount</th><th>Description</th></tr>
+<% @housemate.history.each do |history| %>
+<tr><td><%= history.date %></td><td><%= number_to_currency history.amount %></td><td><%= history.description %></td></tr>
+<% end %>
+</table>
+
