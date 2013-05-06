@@ -1,0 +1,14 @@
+{
+  "type": "ScatterChart",
+  "table": { "cols": [ { "label": "Date", "type": "date" },
+                       { "label": "Balance", "type": "number" } ],
+             "rows": [ <% @history.each do |h| %>
+                       { "c": [ { "v": "<%= h[:date].strftime('Date(%Y,%m,%d)') %>" }, { "v": <%= h[:balance] %>, "f": "<%= number_to_currency h[:balance] %>" } ] }
+                       <%= ',' if h != @history.last %>
+            <% end %>]
+  },
+  "options": { 
+               "legend" : "none",
+               "lineWidth" : 1,
+               "pointSize" : 1 }
+}
